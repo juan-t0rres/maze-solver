@@ -10,12 +10,21 @@ function cell(r,c,size){
   this.walkable = true;
   this.col = color(255);
 
-  this.clicked = function() {
+  this.makeWall = function() {
     var px = mouseX - this.x;
     var py = mouseY - this.y;
     if(px >= 0 && px < size && py >= 0 && py < size){
       this.col = color(0);
       this.walkable = false;
+    }
+  }
+
+  this.removeWall = function() {
+    var px = mouseX - this.x;
+    var py = mouseY - this.y;
+    if(px >= 0 && px < size && py >= 0 && py < size){
+      this.col = color(255);
+      this.walkable = true;
     }
   }
 
