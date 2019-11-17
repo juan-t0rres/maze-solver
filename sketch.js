@@ -1,17 +1,20 @@
-var size = 800;
-var N = size/25;
+var size = 860;
+var N = size/20;
 var grid;
 
 var foundPath;
 var curr;
+
+var drawMode;
 
 var start;
 var target;
 
 function setup() {
   frameRate(15);
-  createCanvas(size+40,size+40);
+  createCanvas(size,size+40);
   background(220);
+  drawMode = true;
   grid = new Array(N);
   for(var i = 0; i < N; i++){
     grid[i] = new Array(N);
@@ -20,17 +23,25 @@ function setup() {
     }
   }
 
-  var pathButton = createButton('Find Shortest Path (A*)');
+  var pathButton = createButton('Find Shortest Path');
   pathButton.position(size/2-40,size+5);
   pathButton.mousePressed(astar);
 
-  var mazeButton = createButton('Generate Random Maze (Kruskals)');
-  mazeButton.position(size/8,size+5);
+  var mazeButton = createButton('Generate Random Maze');
+  mazeButton.position(10,size+5);
   mazeButton.mousePressed(generateMaze);
 
-  var clearButton = createButton('Restart');
-  clearButton.position(size - size/8,size+5);
-  clearButton.mousePressed(restart);
+  var restartButton = createButton('Restart');
+  restartButton.position(size-80,size+5);
+  restartButton.mousePressed(restart);
+
+  var drawButton = createButton('Draw');
+  drawButton.position(size/4,size+5);
+  drawButton.mousePressed(setDrawMode);
+
+  var eraseButton = createButton('Erase');
+  eraseButton.position(size/4+60,size+5);
+  eraseButton.mousePressed(setEraseMode);
 
   start = grid[N-1][N-1];
   target = grid[0][0];
@@ -43,9 +54,13 @@ function setup() {
 function mousePressed(){
   if(foundPath)
     return;
+
   for(var i = 0; i < N; i++){
     for(var j = 0; j < N; j++){
-      grid[i][j].clicked();
+      if(drawMode)
+        grid[i][j].makeWall();
+      else
+        grid[i][j].removeWall();
     }
   }
 }
@@ -158,7 +173,6 @@ function generateMaze(){
   }
   randomize(walls);
   var ds = new dset(N*N);
-  var numEdges = 0;
   var dc = [0,1,1,1,0,-1,-1,-1];
   var dr = [1,1,0,-1,-1,-1,0,1];
   for(var i = 0; i < walls.length; i++){
@@ -201,4 +215,12 @@ function restart() {
 
   curr = target;
   foundPath = false;
+}
+
+function setDrawMode(){
+  drawMode = true;
+}
+
+function setEraseMode(){
+  drawMode = false;
 }
